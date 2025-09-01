@@ -1,0 +1,22 @@
+name: Practical Example
+run-name: ${{ github.actor }} practical example - try number ${{ github.run_number }}
+
+on: workflow_dispatch
+
+jobs:
+  open-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: simulate testing failure
+        run: exit 1
+
+      - name: open new issue
+        if: failure()
+        run: |
+          curl -L \
+          -X POST \ 
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/${{ github.repository }}/issues \
+          -d '{"title":"Automated Issue: Test Failure in Workflow","body":"The workflow 
+             run ${{ github.run_id }} has failed during the testing step. Please investigate the issue."}'
