@@ -1,0 +1,25 @@
+name: environment variables
+run-name: ${{ github.actor }} exlaining environment variables - try number ${{ github.run_number }}
+
+on: workflow_dispatch
+
+env:
+  PHP_VERSION: 8.2
+
+jobs:
+  print-variables:
+    runs-on: ubuntu-latest
+    env:
+      JOB_VAR: "this is a job variable"
+    steps:
+      - name: print variable
+        # ubuntu why $PHP_VERSION
+        run: echo ${{env.PHP_VERSION}}
+
+      - name: print jobs scoped variable
+        run: echo ${{env.JOB_VAR}}
+
+      - name: print step scoped variable
+        env:
+          STEP_VAR: "this is a step scoped variable"
+        run: echo ${{env.STEP_VAR}}
