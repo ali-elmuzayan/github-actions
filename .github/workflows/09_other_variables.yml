@@ -1,0 +1,17 @@
+name: clarify configuration, secrets and default variables
+run-name: ${{ github.actor }} explaining other variables - try number ${{ github.run_number }}
+
+on: workflow_dispatch
+
+jobs:
+  print-variables:
+    runs-on: ubuntu-latest
+    steps:
+      - name: configuration variables
+        run: echo ${{ vars.MY_CONFIG_VAR }}
+
+      - name: secret variables
+        run: echo ${{ secrets.MY_SECRET_VAR }}
+
+      - name: default variables
+        run: env
