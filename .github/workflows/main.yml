@@ -11,7 +11,7 @@ jobs:
         uses: actions/checkout@v4.2.2
 
       - name: print hello world
-        run: ./.github/actions/print-hello-world
+        run: ./.github/actions/print-hello-world/
 
       - name: open new issue
         run: gh issue create --title "This is a new issue created by GitHub CLI" --body "This issue was created using the GitHub CLI in a GitHub Actions workflow."
