@@ -1,0 +1,34 @@
+name: learning about expressions
+run-name: ${{ github.actor }} Learning about expressions - try number ${{ github.run_number }}
+
+on: workflow_dispatch
+
+env:
+  TERNARY_VAR: ${{ github.actor == 'dependabot[bot]' && 'this is dependabot' || 'this is not dependabot' }}
+
+jobs:
+  print-expressions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: print job status
+        run: echo ${{ job.status }}
+
+      - name: print success status
+        if: success()
+        run: echo "success"
+
+      - name: print failure
+        if: failure()
+        run: echo "failure"
+
+      - name: print cancelled status
+        run: echo " cancelled"
+
+      - name: print ternary var
+        run: echo ${{ env.TERNARY_VAR }}
+
+      - name: print env context
+        run: echo ${{ toJson(env) }}
+
+      - name: print github context
+        run: echo ${{ toJson(github) }}
