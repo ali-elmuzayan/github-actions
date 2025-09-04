@@ -1,0 +1,14 @@
+name: container
+run-name: ${{ github.actor }} Explaining Container - run time ${{ github.run_number }}
+
+on: workflow_dispatch
+
+jobs:
+  php-version:
+    runs-on: ubuntu-latest
+    container:
+      image: php:7.2
+
+    steps:
+      - name: Check PHP version
+        run: php -v
