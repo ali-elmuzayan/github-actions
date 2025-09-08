@@ -1,0 +1,22 @@
+name: Commenting on PR
+run-name: Commenting on PR
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  comment-on-pr-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Comment on PR if not merged
+        if: ${{ github.event.pull_request.merged == false }}
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} --body "❌ We 
+          will not be merging your PR. Please update your code to satisfy our 
+          requirements and open a new PR."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

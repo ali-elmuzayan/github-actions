@@ -3,7 +3,7 @@ run-name: formatting
 
 on:
   push:
-    branches: master
+    branches: [ master ]
 
 jobs:
   run-pint-job:
@@ -11,19 +11,37 @@ jobs:
     container:
       image: php:8.3-cli
     steps:
-      - name: checkout
-        uses: actions/checkout@v4.2.2
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: install laravel pint
+      - name: Install Composer
+        run: |
+          EXPECTED_SIGNATURE="$(wget -q -O - https://composer.github.io/installer.sig)"
+          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+          ACTUAL_SIGNATURE="$(php -r "echo hash_file('SHA384', 'composer-setup.php');")"
+
+          if [ "$EXPECTED_SIGNATURE" != "$ACTUAL_SIGNATURE" ]; then
+              >&2 echo 'ERROR: Invalid installer signature'
+              rm composer-setup.php
+              exit 1
+          fi
+
+          php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+          rm composer-setup.php
+          composer --version
+
+      - name: Install Laravel Pint
         run: composer require laravel/pint --dev
 
-      - name: run laravel Pint
+      - name: Run Laravel Pint
         run: ./vendor/bin/pint
 
-      - name: commit changes back
+      - name: Commit changes back
         run: |
-          git config --local user.email "github-action[bot]@users.oreply.github.com"
-          git config --local user.name "github-action[bot]"
-          git add . 
-          git commit -m "Run Pint" || exit 0 
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add .
+          git commit -m "Run Pint" || echo "No changes to commit"
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
