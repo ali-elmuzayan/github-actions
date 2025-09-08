@@ -1,0 +1,29 @@
+name: formatting explanation
+run-name: formatting
+
+on:
+  push:
+    branches: master
+
+jobs:
+  run-pint-job:
+    runs-on: ubuntu-latest
+    container:
+      image: php:8.3-cli
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4.2.2
+
+      - name: install laravel pint
+        run: composer require laravel/pint --dev
+
+      - name: run laravel Pint
+        run: ./vendor/bin/pint
+
+      - name: commit changes back
+        run: |
+          git config --local user.email "github-action[bot]@users.oreply.github.com"
+          git config --local user.name "github-action[bot]"
+          git add . 
+          git commit -m "Run Pint" || exit 0 
+          git push
